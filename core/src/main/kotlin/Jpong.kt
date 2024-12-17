@@ -6,27 +6,26 @@ import states.Pause
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms. */
 class Jpong : ApplicationAdapter() {
-    private var gsm: GameStateManager? = null
-    private var batch: SpriteBatch? = null
+    private var gsm: GameStateManager = GameStateManager()
+    private lateinit var batch: SpriteBatch
 
     override fun create() {
         batch = SpriteBatch()
-        gsm = GameStateManager()
-        gsm?.push(MenuGame(gsm))
+        gsm.push(MenuGame(gsm))
     }
 
     override fun render() {
-        gsm?.update()
-        gsm?.render(batch!!)
+        gsm.update()
+        gsm.render(batch)
     }
 
     override fun dispose() {
-        gsm?.clean()
-        batch!!.dispose()
+        gsm.clean()
+        batch.dispose()
     }
 
     override fun pause() {
-        gsm?.push(Pause(gsm))
+        gsm.push(Pause(gsm))
     }
 
 }

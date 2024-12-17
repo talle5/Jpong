@@ -2,7 +2,6 @@ package states
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
-import com.jpong.game.states.States
 import java.util.*
 
 class GameStateManager {

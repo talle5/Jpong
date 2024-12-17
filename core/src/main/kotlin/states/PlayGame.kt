@@ -3,22 +3,21 @@ package states
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.jpong.game.states.GameOver
-import com.jpong.game.states.States
 import shapes.Bola
 import shapes.Retangle
 import utility.FontColection
 
-class PlayGame internal constructor(gsm: GameStateManager?) : States(gsm) {
-    private val bola: Bola = Bola()
-    private val player1: Retangle = Retangle(780f, 300f)
-    private val player2: Retangle = Retangle(0f, 300f)
-    private var player1points: Int = 0
-    private var player2points: Int = 0
-    private val startime: Long = System.currentTimeMillis()
-    private var wait = 0
+open class PlayGame internal constructor(gsm: GameStateManager) : States(gsm) {
+    protected val bola: Bola = Bola()
+    protected val player1: Retangle = Retangle(780f, 300f)
+    protected val player2: Retangle = Retangle(0f, 300f)
+    protected var player1points: Int = 0
+    protected var player2points: Int = 0
+    protected val startime: Long = System.currentTimeMillis()
+    private var waiting = true
 
     override fun handleInput() {
+
         if (Gdx.input.isKeyPressed(Input.Keys.UP) && player1.y < 525) {
             player1.y += 12
         }
@@ -34,6 +33,7 @@ class PlayGame internal constructor(gsm: GameStateManager?) : States(gsm) {
         if (Gdx.input.isKeyPressed(Input.Keys.S) && player2.y > 0) {
             player2.y -= 12
         }
+
     }
 
     override fun update() {
@@ -45,26 +45,32 @@ class PlayGame internal constructor(gsm: GameStateManager?) : States(gsm) {
             bola.accelerate((System.currentTimeMillis() - startime).toFloat() / 700000)
         }
 
-        if (bola.x > 840) {
+        if (bola.x > 840 && waiting) {
             player1points++
-            bola.centralize()
-            wait = 0
+            Thread {
+                Thread.sleep(1000)
+                bola.centralize()
+                waiting = true
+            }.start()
+            waiting = false
         }
 
-        if (bola.x < -40) {
+        if (bola.x < -40 && waiting) {
             player2points++
-            bola.centralize()
-            wait = 0
+            Thread {
+                Thread.sleep(1000)
+                bola.centralize()
+                waiting = true
+            }.start()
+            waiting = false
         }
 
         if (player2points == 10 || player1points == 10) {
-            gsm!!.set(GameOver(gsm, if (player1points > player2points) "play1" else "play2"))
+            gsm.set(GameOver(gsm, if (player1points > player2points) "play1" else "play2"))
         }
-
-        wait++
     }
 
-    override fun render(batch: SpriteBatch?) {
+    override fun render(batch: SpriteBatch) {
         FontColection.PLACAR.font.draw(batch, player1points.toString(), 200f, 550f)
         FontColection.PLACAR.font.draw(batch, player2points.toString(), 600f, 550f)
         bola.draw(batch)
@@ -78,7 +84,7 @@ class PlayGame internal constructor(gsm: GameStateManager?) : States(gsm) {
         player2.dispose()
     }
 
-    private fun checkColisionWhithplayer(rec: Retangle): Boolean {
+    protected fun checkColisionWhithplayer(rec: Retangle): Boolean {
         return bola.x < rec.x + rec.largura &&
             bola.x + bola.radius * 2 > rec.x &&
             bola.y < rec.y + rec.altura &&

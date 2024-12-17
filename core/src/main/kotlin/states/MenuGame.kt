@@ -3,33 +3,33 @@ package states
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.jpong.game.states.States
 import shapes.Button
 import utility.FontColection
 import kotlin.system.exitProcess
 
-class MenuGame(gsm: GameStateManager?) : States(gsm) {
+class MenuGame(gsm: GameStateManager) : States(gsm) {
     private val startbutton: Button =
         Button(Gdx.files.internal("start.png"), 400f, 240f, 150f, 45f)
-    private val exitbutton: Button
+    private val exitbutton: Button = Button(Gdx.files.internal("exit.png"), 400f, 170f, 150f, 45f)
 
     init {
-        startbutton.isPressed = true
-        exitbutton = Button(Gdx.files.internal("exit.png"), 400f, 170f, 150f, 45f)
+        startbutton.isSelected = true
     }
 
     override fun handleInput() {
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN) || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            startbutton.isPressed = !startbutton.isPressed
-            exitbutton.isPressed = !exitbutton.isPressed
+            startbutton.isSelected = !startbutton.isSelected
+            exitbutton.isSelected = !exitbutton.isSelected
         }
 
-        if (startbutton.isPressed && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            gsm!!.push(PlayGame(gsm))
+        if (startbutton.isSelected && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            gsm.push(PlayGame(gsm))
+//            gsm.push(RemotePlay(gsm))
         }
 
-        if (exitbutton.isPressed && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            gsm!!.clean()
+        if (exitbutton.isSelected && Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            gsm.clean()
             Gdx.app.exit()
             exitProcess(0)
         }
@@ -38,11 +38,11 @@ class MenuGame(gsm: GameStateManager?) : States(gsm) {
     override fun update() {
     }
 
-    override fun render(render: SpriteBatch?) {
-        FontColection.TITLE.font.draw(render, "Jpong", 235f, 500f)
-        FontColection.SUBTITLE.font.draw(render, "A pong game", 335f, 380f)
-        startbutton.draw(render)
-        exitbutton.draw(render)
+    override fun render(batch: SpriteBatch) {
+        FontColection.TITLE.font.draw(batch, "Jpong", 235f, 500f)
+        FontColection.SUBTITLE.font.draw(batch, "A pong game", 335f, 380f)
+        startbutton.draw(batch)
+        exitbutton.draw(batch)
     }
 
     override fun dispose() {

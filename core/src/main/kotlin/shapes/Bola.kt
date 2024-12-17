@@ -2,25 +2,25 @@ package shapes
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import java.util.Random
+import java.util.*
 
 class Bola : Shape(Texture("boll.png")) {
     private val rand = Random()
     var radius = 15f
-    private var xspeed = 1f
-    private var yspeed = 9f
+    var xspeed = 1f
+    var yspeed = 9f
 
     init {
         this.y = rand.nextFloat(600f)
         centralize()
     }
 
-    override fun draw(batch: SpriteBatch?) {
-        batch?.draw(this.texture, this.x, this.y, this.radius * 2, this.radius * 2)
+    override fun draw(batch: SpriteBatch) {
+        batch.draw(this.texture, this.x, this.y, this.radius * 2, this.radius * 2)
     }
 
     fun update() {
-        x += xspeed // * randacceleration;
+        x += xspeed
         y += yspeed
 
         if (y < 0 || y > 585) {

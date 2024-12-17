@@ -34,7 +34,7 @@ open class Retangle : Shape {
         this.altura = 75f
     }
 
-    override fun draw(batch: SpriteBatch?) {
-        batch?.draw(this.texture, this.x, this.y, this.largura, this.altura)
+    override fun draw(batch: SpriteBatch) {
+        batch.draw(this.texture, this.x, this.y, this.largura, this.altura)
     }
 }

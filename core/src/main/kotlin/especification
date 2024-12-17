@@ -1,0 +1,2 @@
+PLAYMOVE {p1,p2} {up,down}
+SETBOLL {x} {y} {x_speed} {y_speed}
